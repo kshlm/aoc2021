@@ -1,0 +1,136 @@
+<!-- livebook:{"autosave_interval_s":60} -->
+
+# Day 3
+
+## Input
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+
+inputwidget = Kino.Input.textarea("Enter your AOC input for the day here")
+```
+
+```elixir
+samplewidget = Kino.Input.textarea("Enter your AOC sample for the day here")
+```
+
+```elixir
+input =
+  Kino.Input.read(inputwidget)
+  |> String.split("\n")
+  |> Enum.map(fn x ->
+    x
+    |> String.to_charlist()
+    |> Enum.map(&(&1 - 48))
+  end)
+
+defmodule Day3 do
+  def frequencies(input) do
+    input
+    |> Enum.zip_reduce([], &[Enum.frequencies(&1) | &2])
+    |> Enum.reverse()
+  end
+
+  def most_common(zero, one) do
+    cond do
+      one >= zero ->
+        1
+
+      zero > one ->
+        0
+    end
+  end
+
+  def least_common(zero, one) do
+    cond do
+      one >= zero ->
+        0
+
+      zero > one ->
+        1
+    end
+  end
+end
+
+input |> Day3.frequencies() |> Enum.with_index()
+```
+
+## Part 1
+
+* `gamma` = binary number formed by most common bit at each position of an input
+
+* `epsilon` = binary number formed by least common bit at each position of an input
+
+* `result` = `gamma` x `epsilon` as decimal
+
+```elixir
+defmodule Day3.Part1 do
+  def power_decoder(input, map_fn) do
+    input
+    |> Day3.frequencies()
+    |> Enum.map(fn %{0 => zero, 1 => one} = _f ->
+      map_fn.(zero, one)
+    end)
+    |> Integer.undigits(2)
+  end
+end
+
+gamma =
+  input
+  |> Day3.Part1.power_decoder(&Day3.most_common/2)
+
+epsilon =
+  input
+  |> Day3.Part1.power_decoder(&Day3.least_common/2)
+
+IO.inspect({gamma, epsilon})
+gamma * epsilon
+```
+
+## Part 2
+
+* Keep only numbers selected by the bit criteria for the type of rating value for which you are searching. Discard numbers which do not match the bit criteria.
+* If you only have one number left, stop; this is the rating value for which you are searching.
+* Otherwise, repeat the process, considering the next bit to the right.
+
+Criteria,
+
+* To find oxygen generator rating, determine the most common value (0 or 1) in the current bit position, and keep only numbers with that bit in that position. If 0 and 1 are equally common, keep values with a 1 in the position being considered.
+* To find CO2 scrubber rating, determine the least common value (0 or 1) in the current bit position, and keep only numbers with that bit in that position. If 0 and 1 are equally common, keep values with a 0 in the position being considered.
+
+```elixir
+defmodule Day3.Part2 do
+  def filter_inputs(input, idx, filter_condition) do
+    if Enum.count(input) == 1 do
+      Enum.at(input, 0)
+    else
+      freq = input |> Day3.frequencies() |> Enum.at(idx)
+      zero = freq |> Map.get(0, 0)
+      one = freq |> Map.get(1, 0)
+      filter_value = filter_condition.(zero, one)
+
+      input
+      |> Enum.filter(fn x ->
+        Enum.at(x, idx) == filter_value
+      end)
+      |> filter_inputs(idx + 1, filter_condition)
+    end
+  end
+end
+
+oxygen =
+  input
+  |> Day3.Part2.filter_inputs(0, &Day3.most_common/2)
+  |> Integer.undigits(2)
+
+co2 =
+  input
+  |> Day3.Part2.filter_inputs(0, &Day3.least_common/2)
+  |> Integer.undigits(2)
+
+IO.inspect({oxygen, co2})
+
+oxygen * co2
+```

@@ -1,0 +1,48 @@
+<!-- livebook:{"autosave_interval_s":null} -->
+
+# AOC Template
+
+## Input
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+```
+
+```elixir
+inputwidget = Kino.Input.textarea("Enter your AOC input for the day here")
+```
+
+```elixir
+samplewidget = Kino.Input.textarea("Enter your AOC sample for the day here")
+```
+
+```elixir
+defmodule Day do
+end
+
+input = Kino.Input.read(inputwidget)
+```
+
+## Part 1
+
+_Add details here_
+
+```elixir
+defmodule Day.Part1 do
+end
+
+input
+```
+
+## Part 2
+
+_Add details here_
+
+```elixir
+defmodule Day.Part2 do
+end
+
+input
+```

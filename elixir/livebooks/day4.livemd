@@ -1,0 +1,37 @@
+<!-- livebook:{"autosave_interval_s":60} -->
+
+# Day 4
+
+## Input
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+```
+
+```elixir
+inputwidget = Kino.Input.textarea("Enter your AOC input for the day here")
+```
+
+```elixir
+samplewidget = Kino.Input.textarea("Enter your AOC sample for the day here")
+```
+
+```elixir
+defmodule Day4 do
+end
+
+input = Kino.Input.read(inputwidget)
+```
+
+## Part 1
+
+
+
+```elixir
+defmodule Day4.Part1 do
+end
+
+input
+```

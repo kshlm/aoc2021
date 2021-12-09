@@ -1,0 +1,60 @@
+<!-- livebook:{"autosave_interval_s":60} -->
+
+# AOC 2021 Day 1
+
+## Input
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+
+inputwidget = Kino.Input.textarea("Enter you AOC input here")
+```
+
+```elixir
+input =
+  Kino.Input.read(inputwidget)
+  |> String.split()
+  |> Enum.map(&String.to_integer/1)
+```
+
+## Part 1
+
+Count the number of times the depth measurement increases from the previous measurement
+
+```elixir
+[first | remaining] = input
+
+{result, _} =
+  remaining
+  |> Enum.reduce({0, first}, fn current, {count, last} ->
+    if current > last do
+      {count + 1, current}
+    else
+      {count, current}
+    end
+  end)
+
+result
+```
+
+## Part 2
+
+Do the same thing except with a window of 3 measurements
+
+```elixir
+[first | remaining] = input |> Enum.chunk_every(3, 1, :discard)
+
+{result, _} =
+  remaining
+  |> Enum.reduce({0, first}, fn chunk, {count, last_chunk} ->
+    if Enum.sum(chunk) > Enum.sum(last_chunk) do
+      {count + 1, chunk}
+    else
+      {count, chunk}
+    end
+  end)
+
+result
+```

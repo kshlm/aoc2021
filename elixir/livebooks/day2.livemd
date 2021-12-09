@@ -1,0 +1,83 @@
+<!-- livebook:{"autosave_interval_s":30} -->
+
+# Day 2
+
+## Input
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+
+inputwidget = Kino.Input.textarea("Enter your AOC input for the day here")
+```
+
+```elixir
+input =
+  Kino.Input.read(inputwidget)
+  |> String.split("\n")
+  |> Enum.map(fn step ->
+    [direction, count] = String.split(step)
+    {direction, String.to_integer(count)}
+  end)
+```
+
+## Part 1
+
+Submarine starts from 0, 0 horizontal and depth position.
+
+* `forward` moves horizontally (adds to horizontal position)
+* `up` moves up in depth (subtracts from depth)
+* `down` moves down in depth (adds to depth)
+
+```elixir
+{h, d} =
+  input
+  |> Enum.reduce({0, 0}, fn {direction, count}, {h, d} ->
+    case direction do
+      "forward" ->
+        {h + count, d}
+
+      "up" ->
+        {h, d - count}
+
+      "down" ->
+        {h, d + count}
+
+      _ ->
+        {h, d}
+    end
+  end)
+
+h * d
+```
+
+## Part 2
+
+Submarine starts with 0, 0 horizontal and depth position, and 0 aim
+
+* `forward` moves horizontally and aim*count in depth (h + count, d + count x aim)
+* `up` reduces aim (aim - count)
+* `down` increases aim (aim + count)
+
+```elixir
+{h, d, _} =
+  input
+  |> Enum.reduce({0, 0, 0}, fn {direction, count}, {h, d, a} ->
+    case direction do
+      "forward" ->
+        {h + count, d + count * a, a}
+
+      "up" ->
+        {h, d, a - count}
+
+      "down" ->
+        {h, d, a + count}
+
+      _ ->
+        {h, d, a}
+    end
+  end)
+
+h * d
+```
