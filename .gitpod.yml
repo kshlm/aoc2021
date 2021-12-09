@@ -2,7 +2,7 @@ tasks:
 - name: Install Elixir and Livebook
   init: |
     wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && DEBIAN_FRONTEND=noninteractive sudo dpkg -i erlang-solutions_2.0_all.deb
-    DEBIAN_FRONTEND=noninteractive sudo apt-get install esl-erlang elixir
+    DEBIAN_FRONTEND=noninteractive sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install esl-erlang elixir
     mix local.hex --force
     mix local.rebar --force
     mix escript.install hex livebook --force
